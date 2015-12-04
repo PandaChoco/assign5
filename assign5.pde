@@ -22,7 +22,7 @@ int []bulletY = new int[5];
 boolean []bulletis = new boolean[5];
 
 void setup () {
-	size(640, 480) ;
+    size(640, 480) ;
   life = 195*0.2;
   x=width-50;
   y=height/2-25;
@@ -38,17 +38,17 @@ void setup () {
   end2 = loadImage("img/end2.png");
   bullet = loadImage("img/shoot.png");
   f = createFont("Arial",24);
-  
-  for (int i=1;i<=5;i++){   
+
+  for (int i=1;i<=5;i++){
     boom[i-1] = loadImage("img/flame"+i+".png");
   }
-  
+
   mx=floor(random(600));
   my=floor(random(440));
   randomY=floor(random(0,height-60));
   addEnemy(0);
   gameState = Game_start;
-  
+
 }
 
 void draw(){
@@ -66,7 +66,7 @@ void draw(){
                gameState = Game_run;}
          }
          break;
-               
+
      case Game_run:
           image(bg1,t,0);
           image(bg2,t-640,0);
@@ -74,18 +74,18 @@ void draw(){
           t++;
           t%=1280;
           t2+=5;
-          
+
           fill(255,0,0);
           rect(10,0,life,20);
-          
-          image(hp,0,0);            //life          
+
+          image(hp,0,0);            //life
           image(treasure,mx,my);
           image(fighter,x,y);
           textFont(f,16);           //print score
           textAlign(CENTER);
           fill(255);
           text("Score: "+score,50,height-30);
-  
+
           for (int i = 0; i < enemyCount; i++) {      //draw enemy & boom
             if (enemyX[i] != -1 || enemyY[i] != -1) {
               image(enemy, enemyX[i], enemyY[i]);
@@ -103,7 +103,7 @@ void draw(){
                   n=0;
                 }
               }
-              enemyX[i]+=5; 
+              enemyX[i]+=5;
             }
             if (t2>(width+fighter.width*5+150)){
               type++;
@@ -135,9 +135,9 @@ void draw(){
                  scoreChange();
                }
             }
-               
+
           }//end of for
-          
+
         for(int i = 0; i < 5; i++){          //draw bullet
           if(!bulletis[i]){
             image(bullet,bulletX[i],bulletY[i]);
@@ -146,18 +146,19 @@ void draw(){
               bulletX[i]-=5;
             }else{
               bulletX[i]-=5;
-              if(bulletY[i]>=enemyY[j]){
+              if(bulletY[i]>=enemyY[j]+4){
                 bulletY[i]-=4;
-              }else{bulletY[i]+=4;}
+              }else{if(bulletY[i]<enemyY[j]-4){bulletY[i]+=4;}
+               }
             }
           }
           if(bulletX[i]<-30){
             bulletis[i]=true;
             bulletY[i]=1000;
           }
-          
+
         }
-          
+
           // get treasure
           if (isHit(mx,my,treasure.width,treasure.height,
               x,y,fighter.width,fighter.height)){
@@ -168,9 +169,7 @@ void draw(){
                life =195;
                }
           }
-          
 
-          
           if (goup){
             y-=yspeed;
           }
@@ -183,7 +182,7 @@ void draw(){
           if (goleft){
             x-=xspeed;
           }
-          
+
           if (x<=0){
             x=0;
           }
@@ -214,79 +213,78 @@ void draw(){
                      gameState=Game_run;
                    }
                }
-               
-               
+
    }
 }
 
 // 0 - straight, 1-slope, 2-dimond
-void addEnemy(int type){	
-	for (int i = 0; i < enemyCount; ++i) {
-		enemyX[i] = -1;
-		enemyY[i] = -1;
-	}
-	switch (type) {
-		case 0:
-			addStraightEnemy();
-			break;
-		case 1:
-			addSlopeEnemy();
-			break;
-		case 2:
-			addDiamondEnemy();
-			break;
-	}
+void addEnemy(int type){
+    for (int i = 0; i < enemyCount; ++i) {
+        enemyX[i] = -1;
+        enemyY[i] = -1;
+    }
+    switch (type) {
+        case 0:
+            addStraightEnemy();
+            break;
+        case 1:
+            addSlopeEnemy();
+            break;
+        case 2:
+            addDiamondEnemy();
+            break;
+    }
 }
 
 void addStraightEnemy(){
-	float t = random(height - enemy.height);
-	int h = int(t);
-	for (int i = 0; i < 5; ++i) {
+    float t = random(height - enemy.height);
+    int h = int(t);
+    for (int i = 0; i < 5; ++i) {
 
-		enemyX[i] = (i+1)*-80;
-		enemyY[i] = h;
+        enemyX[i] = (i+1)*-80;
+        enemyY[i] = h;
           boomis[i]=false;
-	}
+    }
 }
 void addSlopeEnemy(){
-	float t = random(height - enemy.height * 5);
-	int h = int(t);
-	for (int i = 0; i < 5; ++i) {
+    float t = random(height - enemy.height * 5);
+    int h = int(t);
+    for (int i = 0; i < 5; ++i) {
 
-		enemyX[i] = (i+1)*-80;
-		enemyY[i] = h + i * 40;
+        enemyX[i] = (i+1)*-80;
+        enemyY[i] = h + i * 40;
           boomis[i]=false;
-	}
+    }
 }
 void addDiamondEnemy(){
-	float t = random( enemy.height * 3 ,height - enemy.height * 3);
-	int h = int(t);
-	int x_axis = 1;
-	for (int i = 0; i < 8; ++i) {
+    float t = random( enemy.height * 3 ,height - enemy.height * 3);
+    int h = int(t);
+    int x_axis = 1;
+    for (int i = 0; i < 8; ++i) {
             boomis[i]=false;
-		if (i == 0 || i == 7) {
-			enemyX[i] = x_axis*-80;
-			enemyY[i] = h;
-			x_axis++;
-		}
-		else if (i == 1 || i == 5){
-			enemyX[i] = x_axis*-80;
-			enemyY[i] = h + 1 * 40;
-			enemyX[i+1] = x_axis*-80;
-			enemyY[i+1] = h - 1 * 40;
-			i++;
-			x_axis++;
-			
-		}
-		else {
-			enemyX[i] = x_axis*-80;
-			enemyY[i] = h + 2 * 40;
-			enemyX[i+1] = x_axis*-80;
-			enemyY[i+1] = h - 2 * 40;
-			i++;
-			x_axis++;
-		}
-	}
+        if (i == 0 || i == 7) {
+            enemyX[i] = x_axis*-80;
+            enemyY[i] = h;
+            x_axis++;
+        }
+        else if (i == 1 || i == 5){
+            enemyX[i] = x_axis*-80;
+            enemyY[i] = h + 1 * 40;
+            enemyX[i+1] = x_axis*-80;
+            enemyY[i+1] = h - 1 * 40;
+            i++;
+            x_axis++;
+
+        }
+        else {
+            enemyX[i] = x_axis*-80;
+            enemyY[i] = h + 2 * 40;
+            enemyX[i+1] = x_axis*-80;
+            enemyY[i+1] = h - 2 * 40;
+            i++;
+            x_axis++;
+        }
+    }
 }
 
 int closestEnemy(int x,int y){
@@ -294,7 +292,7 @@ int closestEnemy(int x,int y){
   int mark=-1;
   for (int i=0;i<8;i++){
     if (enemyX[i]>-enemy.width || enemyX[i]<width){
-      if (dist(x,y,enemyX[i],enemyY[i])<distance){
+      if (dist(x,y,enemyX[i],enemyY[i])<distance && enemyX[i]!=-1 && enemyY[i]!=-1){
         distance = dist(x,y,enemyX[i],enemyY[i]);
         mark=i;
       }
@@ -324,7 +322,7 @@ void keyPressed(){
          }else if (keyCode == DOWN){
                   godown=true;
                }
-     
+
           if (keyCode == RIGHT){
              goright=true;
           }else if (keyCode == LEFT){
@@ -339,7 +337,7 @@ void keyReleased(){
          }else if (keyCode == DOWN){
                   godown=false;
                }
-     
+
          if (keyCode == RIGHT){
            goright=false;
          }else if (keyCode == LEFT){
